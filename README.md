@@ -1,0 +1,2 @@
+# BacktestTrader
+Backtest using discordTrader
