@@ -84,19 +84,23 @@ class OptimizeStrats:
     def opendataframes(self, take_profit_pct):
 
         df = pd.read_excel(file, engine='openpyxl')
+        # print(df)
 
         if df.empty:
             return
         else:
             entry = df.loc[0]
+        # print(entry)
         entry_date = entry['t']
         entry_price = entry['c']
+
         quantity = int((self.position_size/100)/entry_price)
 
         for index, row in df.iterrows():
             open_order = True
             if self.strategy_to_backtest == "take_profit":
                 take_profit_price = round(entry_price*(1+take_profit_pct),2)
+                # print(f'entryprice: {entry_price}   takeprofitprice: {take_profit_price}  takeprofitpct: {take_profit_pct}')
                 if row['h'] >= take_profit_price and open_order == True:
                     profit = take_profit_price * quantity * 100
                     exit_time = row['t']
@@ -116,7 +120,7 @@ class OptimizeStrats:
                     self.p_l.append(exit_p_l)
                     # print(f'entry_price: {entry_price}  at  entry_date: {entry_date}   ->  '
                     #       f'now exit_price {exit_price}  at exit_date{exit_time}')
-                    # print(f'never hit stop price: P/L= ${exit_p_l}')
+                    # print(f'never hit stop price: P/L= ${round(exit_p_l,2)}')
                     open_order = False
                     return
 

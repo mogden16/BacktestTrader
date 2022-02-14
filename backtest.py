@@ -230,8 +230,12 @@ class BacktestTrader:
 
     def grabDataframes(self):
         self.analysis = self.mongo.analysis
+        self.open_positions = self.mongo.open_positions
+        self.closed_positions = self.mongo.closed_positions
 
         analysis_alerts = list(self.analysis.find({}))
+        open_alerts = list(self.open_positions.find({}))
+        closed_alerts = list(self.closed_positions.find({}))
 
         lookback = timedelta(days=14)
         end_date = datetime.now()
@@ -245,8 +249,10 @@ class BacktestTrader:
 
         if self.backtestBot == "analysis":
             analysisList = analysis_alerts
+        elif self.backtestBot = "open_positions":
+            analysisList = open_positions
         elif self.backtestBot == "closed_positions":
-            print('this is not developed yet! Please choose another self.backtestBot setting')
+            analysisList = closed_alerts
         elif self.backtestBot == "discord":
             analysisList = self.backtestlist
         else:
@@ -254,10 +260,10 @@ class BacktestTrader:
 
 
         for alert in tqdm(analysisList):
-            if self.backtestBot == "analysis" or self.backtestBot == "closed_positions":
-                timestamp = alert['Entry_Date']
-            elif self.backtestBot == "discord":
+            if self.backtestBot == "discord":
                 timestamp = alert['Timestamp']
+            else:
+                timestamp = alert['Entry_Date']
 
             symbol = alert['Symbol']
             option_type = alert['Option_Type'].lower()
